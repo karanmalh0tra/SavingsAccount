@@ -5,13 +5,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Account {
     Lock lock= new ReentrantLock();
 
-    /*Condition to inform on a deposit*/
+    /* Condition to inform on a deposit*/
     Condition informDeposit = lock.newCondition();
 
-    /*Condition for having preferredWithdrawals*/
+    /* Condition for having preferredWithdrawals*/
     Condition preferredWithdrawals = lock.newCondition();
 
-    /*Balance present in the account */
+    /* Balance present in the account */
     int balance;
 
     /* Initializing currently present preferredWithdrawals*/
@@ -48,6 +48,7 @@ public class Account {
         /* Acquire the lock */
         lock.lock();
 
+        /* wait if balance is lesser than withdrawal amount */
         while (balance < withdrawAmount){
             try{
                 informDeposit.await();
@@ -66,7 +67,7 @@ public class Account {
         lock.unlock();
     }
 
-    //withdrawal method to withdraw based on preferred or ordinary transaction
+    /* Withdraw method. if isPreferred is true, call the other withdraw method. */
     public void withdraw(int withdrawAmount,boolean isPreferred)
     {
         if(isPreferred){
@@ -107,6 +108,7 @@ public class Account {
     {
         /* Acquire the lock */
         lock.lock();
+
         /* Add the amount deposited to the balance */
         balance = balance + depositAmount;
 

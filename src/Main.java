@@ -3,6 +3,7 @@ public class Main {
 
         Account account = new Account();
         Account anotherAccount = new Account(100);
+        /* A few threads each with either a withdraw, withdraw preferred, deposit or a transfer transaction */
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -81,6 +82,8 @@ public class Main {
                 account.deposit(400);
             }
         });
+
+        /* Starting each thread */
         t1.start();
         t2.start();
         t3.start();
