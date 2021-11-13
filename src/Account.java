@@ -30,7 +30,7 @@ public class Account {
     /* Implementation of the Transfer Function */
     /* Pass amount and another account. Mentioned in the Main function */
     void transfer(int k, Account reserve) {
-        
+
         lock.lock();
         try {
             reserve.withdraw(k,false);
@@ -76,11 +76,13 @@ public class Account {
             /* Acquire the lock */
             lock.lock();
 
-            while (balance < withdrawAmount) {
-                try {
-                    informDeposit.await();
-                } catch (InterruptedException e) {
-                    System.out.println("Interrupted");
+            while(balance < withdrawAmount || currentQueueOfWithdraws > 0){
+                while (balance < withdrawAmount) {
+                    try {
+                        informDeposit.await();
+                    } catch (InterruptedException e) {
+                        System.out.println("Interrupted");
+                    }
                 }
 
                 while (currentQueueOfWithdraws > 0) {
